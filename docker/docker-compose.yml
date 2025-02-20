@@ -1,0 +1,62 @@
+version: '3.8'
+name: mpfit
+
+services:
+    app:
+        container_name: app
+        build:
+            context: ..
+            dockerfile: ./docker/php-fpm/Dockerfile
+            args:
+                - PUID=${PUID}
+                - PGID=${PGID}
+                - INSTALL_XDEBUG=${INSTALL_XDEBUG}
+        volumes:
+            - ../app:/var/www/app
+            - ../bootstrap:/var/www/bootstrap
+            - ../config:/var/www/config
+            - ../database:/var/www/database
+            - ../public:/var/www/public
+            - ../resources:/var/www/resources
+            - ../routes:/var/www/routes
+            - ../src:/var/www/src
+            - ../templates:/var/www/templates
+            - ../tests:/var/www/tests
+        networks:
+            - app-network
+
+    nginx:
+        container_name: nginx
+        build:
+            context: ./nginx
+        ports:
+            - ${NGINX_HOST_HTTP_PORT}:80
+        depends_on:
+            - app
+        volumes:
+            - ../public:/var/www/public
+        networks:
+            - app-network
+
+    db:
+        image: mysql:8.0.41
+        volumes:
+            - db_data:/var/lib/mysql
+        container_name: db
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: mpfit
+            MYSQL_USER: mpfit_user
+            MYSQL_PASSWORD: mpfit_pass
+            MYSQL_ROOT_PASSWORD: 1234
+        networks:
+            - app-network
+
+volumes:
+    db_data:
+
+networks:
+    app-network:
