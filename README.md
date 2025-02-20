@@ -1,10 +1,12 @@
-# Запуск приложения 
+# Тестовое задание для МПФИТ
 
-## Установка и запуск
+## Запуск приложения 
+
+### Установка и запуск
 
 1. Склонируйте репозиторий:
    ```bash
-   git clone https://github.com/aimix/mpfit.git
+   git clone https://github.com/a1mix/mpfit.git
    cd mpfit
 
 2. Создайте файл .env на основе .env.example:
